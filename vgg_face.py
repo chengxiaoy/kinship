@@ -26,7 +26,8 @@ from datetime import datetime
 from keras.callbacks import TensorBoard
 from keras.preprocessing import image
 import keras
-
+from keras.engine.topology import Layer
+from FMLayer import FMLayer
 from compact_bilinear_pooling import compact_bilinear_pooling_layer
 
 model_name = "kinship_{}".format(datetime.now().strftime('%b%d_%H-%M-%S'))
@@ -116,7 +117,7 @@ def baseline_model():
     # x_dot = Dot(axes=[2, 2], normalize=True)([x1_, x2_])
     # x_dot = Flatten()(x_dot)
 
-    x = Subtract()([x1, x2])
+    # x = Subtract()([x1, x2])
 
     # region
 
@@ -127,40 +128,42 @@ def baseline_model():
     # x = Activation('relu')(x)
     # x = Dropout(0.3)(x)
 
-    x = keras.layers.Conv2D(512, 1)(x)
-    x = BatchNormalization()(x)
-    x = Activation('relu')(x)
-    x = Dropout(0.3)(x)
+    # x = keras.layers.Conv2D(1024, 3)(x)
+    # x = BatchNormalization()(x)
+    # x = Activation('relu')(x)
+    # x = Dropout(0.3)(x)
 
     #
     # x = keras.layers.Conv2D(2048, 3)(x)
 
-    x = GlobalAvgPool2D()(x)
+    # x = GlobalAvgPool2D()(x)
     # x2 = GlobalMaxPool2D()(x)
     # x = Concatenate(axis=-1)([x1, x2])
 
-    # x1 = GlobalAvgPool2D()(x1)
-    # x2 = GlobalAvgPool2D()(x2)
+    x1 = GlobalAvgPool2D()(x1)
+    x2 = GlobalAvgPool2D()(x2)
 
     # x1 = Concatenate(axis=-1)([GlobalMaxPool2D()(x1), GlobalAvgPool2D()(x1)])
     # x2 = Concatenate(axis=-1)([GlobalMaxPool2D()(x2), GlobalAvgPool2D()(x2)])
 
-    # x3 = Subtract()([x1, x2])
-    # x3 = Multiply()([x3, x3])
+    x3 = Subtract()([x1, x2])
+
+    x3 = Multiply()([x3, x3])
     # x = x3
     #
     # # x = Multiply()([x1, x2])
     # # x1**2-x2**2
-    # x1_ = Multiply()([x1, x1])
-    # x2_ = Multiply()([x2, x2])
-    # x = Subtract()([x1_, x2_])
+    x1_ = Multiply()([x1, x1])
+    x2_ = Multiply()([x2, x2])
+    x = Subtract()([x1_, x2_])
     # # concat
-    # x = Concatenate(axis=-1)([x, x3])
+    x = Concatenate(axis=-1)([x, x3])
 
     # x = compact_bilinear_pooling_layer(x1.shape, x2.shape, 200, sum_pool=True)(x1, x2)
 
     # x = Dropout(0.1)(x)
-    x = Dense(100, activation="relu")(x)
+    # x = Dense(100, activation="relu")(x)
+    x = FMLayer(200, 100)(x)
     x = Dropout(0.01)(x)
     # x = Dense(50, activation="relu")(x)
     # x = Dropout(0.01)(x)
