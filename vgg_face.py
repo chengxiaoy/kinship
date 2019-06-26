@@ -125,9 +125,9 @@ def baseline_model():
     #
     # x = keras.layers.Conv2D(2048, 3)(x)
 
-    x1 = GlobalAvgPool2D()(x)
-    x2 = GlobalMaxPool2D()(x)
-    x = Concatenate(axis=-1)([x1, x2])
+    x = GlobalAvgPool2D()(x)
+    # x2 = GlobalMaxPool2D()(x)
+    # x = Concatenate(axis=-1)([x1, x2])
 
     # x1 = GlobalAvgPool2D()(x1)
     # x2 = GlobalAvgPool2D()(x2)
