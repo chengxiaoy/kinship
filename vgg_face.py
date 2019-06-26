@@ -123,7 +123,7 @@ def baseline_model():
 
     # region end
     #
-    x = keras.layers.Conv2D(1024, 3)(x)
+    x = keras.layers.Conv2D(1024, 1)(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     #
