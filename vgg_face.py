@@ -5,6 +5,10 @@ import keras.backend as K
 
 K.set_image_dim_ordering('tf')
 
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+
+
 from collections import defaultdict
 from glob import glob
 from random import choice, sample
