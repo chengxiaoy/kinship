@@ -123,7 +123,7 @@ def baseline_model():
 
     # region end
     #
-    x = keras.layers.Conv2D(1024, 1)(x)
+    x = keras.layers.Conv2D(1024, 3)(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
     #
@@ -171,7 +171,7 @@ def baseline_model():
 
 file_path = "vgg_face.h5"
 
-checkpoint = ModelCheckpoint(file_path, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
+checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 
 reduce_on_plateau = ReduceLROnPlateau(monitor="val_acc", mode="max", factor=0.1, patience=20, verbose=1)
 
@@ -180,7 +180,7 @@ callbacks_list = [checkpoint, reduce_on_plateau, tensor_board]
 model = baseline_model()
 # model.load_weights(file_path)
 model.fit_generator(gen(train, train_person_to_images_map, batch_size=16), use_multiprocessing=True,
-                    validation_data=gen(val, val_person_to_images_map, batch_size=16), epochs=40, verbose=2,
+                    validation_data=gen(val, val_person_to_images_map, batch_size=16), epochs=100, verbose=2,
                     workers=4, callbacks=callbacks_list, steps_per_epoch=200, validation_steps=100)
 
 test_path = "input/test/"
