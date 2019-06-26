@@ -5,18 +5,17 @@ import keras.backend as K
 
 K.set_image_dim_ordering('tf')
 
-
 os.environ["CUDA_VISIBLE_DEVICES"] = "3"
-
 
 from collections import defaultdict
 from glob import glob
 from random import choice, sample
+import math
 
 import cv2
 import numpy as np
 import pandas as pd
-from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, LearningRateScheduler
 from keras.layers import Input, Dense, BatchNormalization, Activation, GlobalMaxPool2D, GlobalAvgPool2D, Concatenate, \
     Multiply, Dropout, Subtract
 from keras.models import Model
@@ -126,6 +125,13 @@ def baseline_model():
     x = keras.layers.Conv2D(1024, 3)(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
+    # x = Dropout(0.3)(x)
+    #
+    # x = keras.layers.Conv2D(512, 3)(x)
+    # x = BatchNormalization()(x)
+    # x = Activation('relu')(x)
+    # x = Dropout(0.3)(x)
+
     #
     # x = keras.layers.Conv2D(2048, 3)(x)
 
@@ -175,7 +181,19 @@ checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_
 
 reduce_on_plateau = ReduceLROnPlateau(monitor="val_acc", mode="max", factor=0.1, patience=20, verbose=1)
 
-callbacks_list = [checkpoint, reduce_on_plateau, tensor_board]
+
+def step_decay(epoch):
+    initial_lrate = 0.00001
+    drop = 0.1
+    epochs_drop = 20.0
+    lrate = initial_lrate * np.power(drop,
+                                     math.floor((1 + epoch) / epochs_drop))
+    return lrate
+
+
+lrate = LearningRateScheduler(step_decay)
+
+callbacks_list = [checkpoint, lrate, tensor_board]
 
 model = baseline_model()
 # model.load_weights(file_path)
