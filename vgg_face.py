@@ -162,8 +162,8 @@ def baseline_model():
     # x = compact_bilinear_pooling_layer(x1.shape, x2.shape, 200, sum_pool=True)(x1, x2)
 
     # x = Dropout(0.1)(x)
-    # x = Dense(100, activation="relu")(x)
-    x = FMLayer(200, 100)(x)
+    x = Dense(100, activation="relu")(x)
+    # x = FMLayer(200, 100)(x)
     x = Dropout(0.01)(x)
     # x = Dense(50, activation="relu")(x)
     # x = Dropout(0.01)(x)
