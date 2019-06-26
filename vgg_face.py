@@ -125,12 +125,12 @@ def baseline_model():
     x = keras.layers.Conv2D(1024, 3)(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    # x = Dropout(0.3)(x)
-    #
-    # x = keras.layers.Conv2D(512, 3)(x)
-    # x = BatchNormalization()(x)
-    # x = Activation('relu')(x)
-    # x = Dropout(0.3)(x)
+    x = Dropout(0.3)(x)
+
+    x = keras.layers.Conv2D(512, 3)(x)
+    x = BatchNormalization()(x)
+    x = Activation('relu')(x)
+    x = Dropout(0.3)(x)
 
     #
     # x = keras.layers.Conv2D(2048, 3)(x)
@@ -183,12 +183,14 @@ reduce_on_plateau = ReduceLROnPlateau(monitor="val_acc", mode="max", factor=0.1,
 
 
 def step_decay(epoch):
-    initial_lrate = 0.00001
-    drop = 0.1
-    epochs_drop = 20.0
-    lrate = initial_lrate * np.power(drop,
-                                     math.floor((1 + epoch) / epochs_drop))
-    return lrate
+    initial_lrates = [0.00001, 0.000001, 0.0000001]
+
+    if epoch < 20:
+        return initial_lrates[0]
+    elif epoch < 60:
+        return initial_lrates[1]
+    else:
+        return initial_lrates[2]
 
 
 lrate = LearningRateScheduler(step_decay)
