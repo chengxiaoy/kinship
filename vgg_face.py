@@ -198,7 +198,7 @@ def step_decay(epoch):
 
 lrate = LearningRateScheduler(step_decay)
 
-callbacks_list = [checkpoint, lrate, tensor_board]
+callbacks_list = [checkpoint, reduce_on_plateau, tensor_board]
 
 model = baseline_model()
 # model.load_weights(file_path)
