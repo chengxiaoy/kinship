@@ -106,7 +106,7 @@ def baseline_model():
         x.trainable = True
 
     # 一、 fix architecture bug
-    base_model = Model(base_model.input, base_model.layers[-2].output)
+    # base_model = Model(base_model.input, base_model.layers[-2].output)
 
     x1 = base_model(input_1)
     x2 = base_model(input_2)
@@ -140,11 +140,11 @@ def baseline_model():
     # x2 = GlobalMaxPool2D()(x)
     # x = Concatenate(axis=-1)([x1, x2])
 
-    x1 = GlobalAvgPool2D()(x1)
-    x2 = GlobalAvgPool2D()(x2)
-
-    # x1 = Concatenate(axis=-1)([GlobalMaxPool2D()(x1), GlobalAvgPool2D()(x1)])
-    # x2 = Concatenate(axis=-1)([GlobalMaxPool2D()(x2), GlobalAvgPool2D()(x2)])
+    # x1 = GlobalAvgPool2D()(x1)
+    # x2 = GlobalAvgPool2D()(x2)
+    #
+    x1 = Concatenate(axis=-1)([GlobalMaxPool2D()(x1), GlobalAvgPool2D()(x1)])
+    x2 = Concatenate(axis=-1)([GlobalMaxPool2D()(x2), GlobalAvgPool2D()(x2)])
 
     x3 = Subtract()([x1, x2])
 
@@ -171,7 +171,7 @@ def baseline_model():
 
     model = Model([input_1, input_2], out)
 
-    model.compile(loss="binary_crossentropy", metrics=['acc'], optimizer=Adam(0.00001))
+    model.compile(loss="binary_crossentropy", metrics=['acc'], optimizer=Adam(0.00003))
 
     model.summary()
 
