@@ -28,8 +28,8 @@ from keras.optimizers import Adam
 from keras_vggface.utils import preprocess_input
 from keras_vggface.vggface import VGGFace
 
-train_file_path = "../input/train_relationships.csv"
-train_folders_path = "../input/train/"
+train_file_path = "./input/train_relationships.csv"
+train_folders_path = "./input/train/"
 
 # val_famillies_list = ["F01", "F02", "F03", "F04", "F05", "F06", "F07", "F08", "F09"]
 val_famillies_list = [ "F09"]
