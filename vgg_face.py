@@ -152,7 +152,7 @@ val_acc_list = []
 
 
 def train_model1():
-    for i in tqdm_notebook(range(n_val_famillies_list)):
+    for i in range(n_val_famillies_list):
         train, val, train_person_to_images_map, val_person_to_images_map = get_train_val(val_famillies_list[i])
         file_path = f"vgg_face_{i}.h5"
         checkpoint = ModelCheckpoint(file_path, monitor='val_acc', verbose=1, save_best_only=True, mode='max')
